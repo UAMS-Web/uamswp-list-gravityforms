@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/UAMS-Web/uamswp-list-gravityforms
  * Description:       List All Gravity Forms in a WordPress Multisite Installation
  * Version:           1.0.0
- * Author:            UAMS Communications and Marketing, Web Services
+ * Author:            UAMS Web Services
  * Author URI:        https://communications.uams.edu/web/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
