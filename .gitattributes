@@ -1,0 +1,5 @@
+# Keep-list: the download holds only what the plugin runs (see .claude/rules/keep-the-download-to-what-runs.md).
+/* export-ignore
+/.* export-ignore
+/includes -export-ignore
+/uamswp-list-gravityforms.php -export-ignore
