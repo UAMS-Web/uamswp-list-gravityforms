@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * Plugin Name:       UAMSWP List All Gravity Forms
  * Plugin URI:        https://github.com/UAMS-Web/uamswp-list-gravityforms
@@ -12,26 +14,27 @@
  * Text Domain:       uamswp-list-gravityforms
  */
 
- // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+// If this file is called directly, abort.
+if (! defined('WPINC')) {
+    exit;
 }
 
 // This plugin uses namespaces and requires PHP 8.0 or greater.
-if ( version_compare( PHP_VERSION, '8.0', '<' ) ) {
-	add_action( 'admin_notices', create_function( '', // phpcs:ignore WordPress.PHP.RestrictedPHPFunctions.create_function_create_function
-	"echo '<div class=\"error\"><p>" . __( 'UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.', 'uamswp-list-gravityforms' ) . "</p></div>';" ) );
-	return;
+if (version_compare(PHP_VERSION, '8.0', '<')) {
+    add_action('admin_notices', create_function('', // phpcs:ignore WordPress.PHP.RestrictedPHPFunctions.create_function_create_function
+        "echo '<div class=\"error\"><p>".__('UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.', 'uamswp-list-gravityforms')."</p></div>';"));
+
+    return;
 }
 
 define('UAMS_GF_LIST_ROOT_URL', plugin_dir_url(__FILE__));
 define('UAMS_GF_LIST_PATH', plugin_dir_path(__FILE__));
-$plugin_header  = get_file_data(
-		__FILE__,
-		[
-			'version' => 'Version',
-		]
-	);
+$plugin_header = get_file_data(
+    __FILE__,
+    [
+        'version' => 'Version',
+    ]
+);
 $plugin_version = $plugin_header['version'];
 define('UAMS_GF_LIST_VERSION', $plugin_version);
-include_once __DIR__ . '/includes/gf-list.php';
+include_once __DIR__.'/includes/gf-list.php';
