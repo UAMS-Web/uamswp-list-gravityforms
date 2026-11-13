@@ -6,7 +6,7 @@ if (!is_multisite()) {
 if (!class_exists('GFAPI')) {
     wp_die('Gravity Forms API not available. Make sure Gravity Forms is active.');
 }
-function get_gravity_forms_for_site($site_id) {
+function get_gravity_forms_for_site($site_id): array {
     switch_to_blog($site_id); // Change site
     $forms = GFAPI::get_forms(); // Retrieves all forms from this site
     $site_name = get_bloginfo('name'); // Name of site
@@ -16,10 +16,8 @@ function get_gravity_forms_for_site($site_id) {
         $form_links = '';
 		// Search through pages for form ID
         $pages = search_for_specific_gravity_form($form['id']);
-        if (!empty($pages)) {
-            foreach ($pages as $page) {
-                $form_links .= '<a href="' . get_edit_post_link($page) . '">' . esc_html(get_the_title( $page )) . '</a><br>';
-            }
+        foreach ($pages as $page) {
+            $form_links .= '<a href="' . get_edit_post_link($page) . '">' . esc_html(get_the_title( $page )) . '</a><br>';
         }
 
         $forms_details[] = [
@@ -29,7 +27,7 @@ function get_gravity_forms_for_site($site_id) {
             'form_id' => $form['id'],
             'form_title' => $form['title'],
             'form_status' => $form['is_active'] ? 'Active' : 'Inactive',
-			'form_links' => $form_links ? $form_links : 'None',
+			'form_links' => $form_links ?: 'None',
 		];
     }
     restore_current_blog();
@@ -37,7 +35,7 @@ function get_gravity_forms_for_site($site_id) {
 }
 
 add_action( 'network_admin_menu', 'gf_list_admin_menu' );
-function gf_list_admin_menu() {
+function gf_list_admin_menu(): void {
     add_menu_page(
         'List All Gravity Forms',
         'List Gravity Forms',
@@ -48,7 +46,7 @@ function gf_list_admin_menu() {
     );
 }
 
-function gf_list_admin_page() { ?>
+function gf_list_admin_page(): void { ?>
     <div class="wrap">
         <h1>All Gravity Forms on Network</h1>
     <?php 
@@ -58,7 +56,7 @@ function gf_list_admin_page() { ?>
             $site_id = $site->blog_id;
             $all_forms = array_merge($all_forms, get_gravity_forms_for_site($site_id));
         }
-        if (!empty($all_forms)) {
+        if ($all_forms !== []) {
             echo '<table border="1" cellpadding="5" cellspacing="0">';
             echo '<tr><th>Site ID</th><th>Site Name</th><th>Form ID</th><th>Form Name</th><th>Form Status</th><th>&nbsp;</th><th>Pages with Form</th></tr>';
             foreach ($all_forms as $form) {
@@ -81,17 +79,20 @@ function gf_list_admin_page() { ?>
     <?php
 }
 
-function search_for_specific_gravity_form($form_id) {
+/**
+ * @return mixed[]
+ */
+function search_for_specific_gravity_form($form_id): array {
     // Define the post types to search through (in this case, only pages)
-    $post_types = array('page');
+    $post_types = ['page'];
 
     $ids = [];
     
     // Set up the arguments for WP_Query
-    $args = array(
+    $args = [
         'post_type' => $post_types,
         'posts_per_page' => -1, // Retrieve all posts
-    );
+    ];
     
     // Run the query to get all pages
     $query = new WP_Query($args);

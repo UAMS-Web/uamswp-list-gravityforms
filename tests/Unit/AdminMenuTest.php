@@ -8,6 +8,7 @@
 
 declare(strict_types=1);
 
+use function Brain\Monkey\Functions\expect;
 use Brain\Monkey\Functions;
 
 beforeEach(function (): void {
@@ -17,7 +18,7 @@ beforeEach(function (): void {
 });
 
 it('adds the network admin page that lists the forms', function (): void {
-    Functions\expect('add_menu_page')
+    expect('add_menu_page')
         ->once()
         ->with(
             'List All Gravity Forms',

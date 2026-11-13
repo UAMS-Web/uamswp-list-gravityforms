@@ -7,7 +7,7 @@ add_action( 'plugins_loaded', 'UAMS\GF_List\bootstrap' );
  *
  * @since 1.0.0
  */
-function bootstrap() {
+function bootstrap(): void {
     // include_once (__DIR__ . '/class.gf-block-finder.php' );
     include_once (__DIR__ . '/class.gf-list-functions.php' );
 }

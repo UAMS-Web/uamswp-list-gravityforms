@@ -22,19 +22,16 @@ if ( version_compare( PHP_VERSION, '8.0', '<' ) ) {
 	add_action( 'admin_notices', create_function( '', // phpcs:ignore WordPress.PHP.RestrictedPHPFunctions.create_function_create_function
 	"echo '<div class=\"error\"><p>" . __( 'UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.', 'uamswp-list-gravityforms' ) . "</p></div>';" ) );
 	return;
-} else {
-	define('UAMS_GF_LIST_ROOT_URL', plugin_dir_url(__FILE__));
-	define('UAMS_GF_LIST_PATH', plugin_dir_path(__FILE__));
-
-	$plugin_header  = get_file_data(
-		__FILE__,
-		array(
-			'version' => 'Version',
-		)
-	);
-	$plugin_version = $plugin_header['version'];
-
-	define('UAMS_GF_LIST_VERSION', $plugin_version);
-	
-	include_once __DIR__ . '/includes/gf-list.php';
 }
+
+define('UAMS_GF_LIST_ROOT_URL', plugin_dir_url(__FILE__));
+define('UAMS_GF_LIST_PATH', plugin_dir_path(__FILE__));
+$plugin_header  = get_file_data(
+		__FILE__,
+		[
+			'version' => 'Version',
+		]
+	);
+$plugin_version = $plugin_header['version'];
+define('UAMS_GF_LIST_VERSION', $plugin_version);
+include_once __DIR__ . '/includes/gf-list.php';
