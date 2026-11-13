@@ -64,3 +64,21 @@ Contributions are welcome! If you have any improvements or bug fixes, feel free 
 
 ## License
 This plugin is provided under the [GNU General Public License v2 (or later)](https://www.gnu.org/licenses/gpl-2.0.html).
+
+
+## Tests
+
+The unit suite runs on Pest 5 with Brain Monkey, so it needs no WordPress install and no database. It develops and tests on PHP 8.4.27 (`config.platform.php` in `composer.json`); the declared plugin floor is unchanged and is tracked separately.
+
+```bash
+composer install
+composer test
+```
+
+`composer test` runs `vendor/bin/pest`. The shared local CI runner runs the same suite alongside its other jobs:
+
+```bash
+node .claude/skills/local-ci/local-ci.mjs
+```
+
+Test files are named `*Test.php` under `tests/Unit/`; a file named otherwise never runs.
