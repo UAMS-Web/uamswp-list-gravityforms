@@ -59,6 +59,14 @@ This PHP script is a custom plugin designed to list all Gravity Forms across a W
 - This script is intended for use in a WordPress multisite environment where Gravity Forms is installed and activated.
 - The commented-out section (related to `Gravity_Forms_Block_Finder`) could be used to find pages that include specific forms, but it requires additional setup and might not work with all versions of Gravity Forms.
 
+## Credits
+
+Developed and maintained by UAMS Web Services.
+
+Developers:
+
+- Josh Daugherty
+
 ## Contributing
 Contributions are welcome! If you have any improvements or bug fixes, feel free to fork this repository, make your changes, and submit a pull request.
 
