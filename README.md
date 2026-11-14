@@ -74,6 +74,10 @@ Contributions are welcome! If you have any improvements or bug fixes, feel free 
 This plugin is provided under the [GNU General Public License v2 (or later)](https://www.gnu.org/licenses/gpl-2.0.html).
 
 
+## Code quality
+
+`composer test:pint` checks formatting (Pint, `laravel` preset), `composer test:refactor` previews Rector's rules and `composer stan` runs PHPStan at level 0. `composer pint` and `composer refactor` apply their fixes. The Pint reformat commit is listed in `.git-blame-ignore-revs`; run `git config blame.ignoreRevsFile .git-blame-ignore-revs` once per clone so `git blame` skips it.
+
 ## Tests
 
 The unit suite runs on Pest 5 with Brain Monkey, so it needs no WordPress install and no database. It develops and tests on PHP 8.4.27 (`config.platform.php` in `composer.json`); the declared plugin floor is unchanged and is tracked separately.

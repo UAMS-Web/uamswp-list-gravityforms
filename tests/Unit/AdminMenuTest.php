@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 use Brain\Monkey\Functions;
 
+use function Brain\Monkey\Functions\expect;
+
 beforeEach(function (): void {
     require_once __DIR__.'/../Support/load-functions.php';
 
@@ -17,7 +19,7 @@ beforeEach(function (): void {
 });
 
 it('adds the network admin page that lists the forms', function (): void {
-    Functions\expect('add_menu_page')
+    expect('add_menu_page')
         ->once()
         ->with(
             'List All Gravity Forms',
