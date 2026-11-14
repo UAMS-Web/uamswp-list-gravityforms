@@ -31,7 +31,8 @@
         "refactor": "rector",
         "test:refactor": "rector --dry-run",
         "pint": "pint",
-        "test:pint": "pint --test"
+        "test:pint": "pint --test",
+        "mutate": "pest --mutate --covered-only --path=includes,uamswp-list-gravityforms.php"
     },
     "scripts-descriptions": {
         "test": "Run the test suite.",
@@ -40,6 +41,7 @@
         "refactor": "Apply Rector's gating rules.",
         "test:refactor": "Preview Rector's gating rules without changing files.",
         "pint": "Format first-party PHP with Pint.",
-        "test:pint": "Check formatting with Pint without changing files."
+        "test:pint": "Check formatting with Pint without changing files.",
+        "mutate": "Run Pest mutation testing over the plugin's first-party PHP."
     }
 }
