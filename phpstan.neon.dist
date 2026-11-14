@@ -53,7 +53,7 @@ parameters:
     # from 0 upward (see the code-quality skill), then raise it by one per
     # change as findings are fixed, until `max`. Lowering it is a deliberate,
     # argued change, not a quiet edit to get a red run green.
-    level: 3
+    level: 4
 
     # PLACEHOLDER: the directories and files holding first-party PHP, including
     # the plugin header file at the root. Include tests: test bugs are real
@@ -158,20 +158,16 @@ parameters:
             identifier: function.notFound
             message: '#^Function create_function not found\.$#'
             path: uamswp-list-gravityforms.php
-        # The entry most plugins need once the level reaches 4, from
-        # aether-wordpress-migration-api: the PHP version guard in the plugin header.
-        # PHPStan analyzes at the `min` above, so
-        # `version_compare(PHP_VERSION, '8.2', '<')` is always false *to the
-        # analyzer*, but the guard exists precisely for the case the analyzer
-        # cannot model: a site downgraded underneath an already-active plugin,
-        # where the alternative to this branch is a fatal error instead of an
-        # admin notice. PHPStan reports `if.alwaysFalse` from level 4, and only
-        # where the header has such a guard; below that, or without the guard,
-        # this entry is unmatched and fails the run. (The range form of
-        # `phpVersion` keeps it matching; the single-integer form does not.)
-        # -
-        #     identifier: if.alwaysFalse
-        #     path: my-plugin.php
+        # The plugin file's runtime PHP version guard, `version_compare(PHP_VERSION,
+        # '8.0', '<')`. PHPStan analyzes at the `min` above (8.2), so the condition
+        # is always false to the analyzer, but the guard exists for a site
+        # downgraded underneath an already-active plugin, where the alternative to
+        # this branch is a fatal error instead of an admin notice. PHPStan reports
+        # `if.alwaysFalse` from level 4, only for this guard. The range form of
+        # `phpVersion` keeps the entry matching.
+        -
+            identifier: if.alwaysFalse
+            path: uamswp-list-gravityforms.php
 
         # When the Unit tests run on Pest (with the extension above), two
         # entries, each pinned to `tests/`, so the same error anywhere else
