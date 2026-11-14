@@ -39,7 +39,9 @@ jobs:
     uses: UAMS-Web/uams-ci-workflows/.github/workflows/ci.yml@v0.10.1
     with:
       linux-only: true
-      mutate: false
+      mutate: true
+      mutate-paths: includes uamswp-list-gravityforms.php
+      mutate-ignore-paths: includes tests
       floor-lint: true
       floor-lint-php: '8.2'
       floor-lint-command: php -l uamswp-list-gravityforms.php && find includes -name '*.php' -print0 | xargs -0 -n1 php -l
