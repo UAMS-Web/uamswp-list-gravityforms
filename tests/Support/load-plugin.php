@@ -77,3 +77,19 @@ function gf_list_tests_load_plugin(): array
 
     return $loaded;
 }
+
+/**
+ * Stands in for parse_blocks(): the test passes the blocks as a JSON array.
+ *
+ * @return array<mixed, mixed>
+ */
+function gf_list_tests_parse_blocks(string $content): array
+{
+    $blocks = json_decode($content, true);
+
+    if (! is_array($blocks)) {
+        throw new RuntimeException('The test content is not a JSON array of blocks.');
+    }
+
+    return $blocks;
+}

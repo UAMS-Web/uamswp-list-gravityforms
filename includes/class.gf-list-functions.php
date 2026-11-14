@@ -10,7 +10,7 @@ if (! class_exists('GFAPI')) {
  * Lists the Gravity Forms of one site, with the pages that embed each form.
  *
  * @param  int  $site_id  The blog ID.
- * @return array<int, array<string, mixed>>
+ * @return list<array{site_id: int, site_name: string, site_url: string, form_id: int|string, form_title: string, form_status: string, form_links: string}>
  */
 function get_gravity_forms_for_site(int $site_id): array
 {
@@ -72,12 +72,12 @@ function gf_list_admin_page(): void
         echo '<tr><th>Site ID</th><th>Site Name</th><th>Form ID</th><th>Form Name</th><th>Form Status</th><th>&nbsp;</th><th>Pages with Form</th></tr>';
         foreach ($all_forms as $form) {
             echo '<tr>';
-            echo '<td>'.esc_html($form['site_id']).'</td>';
+            echo '<td>'.esc_html((string) $form['site_id']).'</td>';
             echo '<td><a href="'.esc_html($form['site_url']).'/wp-admin/">'.esc_html($form['site_name']).'</a></td>';
-            echo '<td>'.esc_html($form['form_id']).'</td>';
+            echo '<td>'.esc_html((string) $form['form_id']).'</td>';
             echo '<td>'.esc_html($form['form_title']).'</td>';
             echo '<td>'.esc_html($form['form_status']).'</td>';
-            echo '<td><a href="'.esc_html($form['site_url']).'/wp-admin/admin.php?page=gf_edit_forms&id='.esc_html($form['form_id']).'">View Form</a></td>';
+            echo '<td><a href="'.esc_html($form['site_url']).'/wp-admin/admin.php?page=gf_edit_forms&id='.esc_html((string) $form['form_id']).'">View Form</a></td>';
             echo '<td>'.$form['form_links'].'</td>';
             echo '</tr>';
         }
@@ -92,7 +92,7 @@ function gf_list_admin_page(): void
 
 /**
  * @param  int|string  $form_id  The Gravity Forms form ID; Gravity Forms returns it as an integer or a numeric string.
- * @return mixed[]
+ * @return list<int> The IDs of the pages that embed the form, once per matching block.
  */
 function search_for_specific_gravity_form(int|string $form_id): array
 {
@@ -123,7 +123,11 @@ function search_for_specific_gravity_form(int|string $form_id): array
             foreach ($blocks as $block) {
                 if ($block['blockName'] === 'gravityforms/form') {
                     if (isset($block['attrs']['formId']) && ($block['attrs']['formId'] == $form_id)) {
-                        $ids[] = get_the_ID();
+                        // get_the_ID() is false only outside the loop, which cannot happen after the_post().
+                        $post_id = get_the_ID();
+                        if ($post_id !== false) {
+                            $ids[] = $post_id;
+                        }
                     }
                 }
             }
