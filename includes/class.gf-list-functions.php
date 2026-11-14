@@ -6,7 +6,13 @@ if (! is_multisite()) {
 if (! class_exists('GFAPI')) {
     wp_die('Gravity Forms API not available. Make sure Gravity Forms is active.');
 }
-function get_gravity_forms_for_site($site_id): array
+/**
+ * Lists the Gravity Forms of one site, with the pages that embed each form.
+ *
+ * @param  int|string  $site_id  The blog ID; `WP_Site::$blog_id` is a numeric string.
+ * @return array<int, array<string, mixed>>
+ */
+function get_gravity_forms_for_site(int|string $site_id): array
 {
     switch_to_blog($site_id); // Change site
     $forms = GFAPI::get_forms(); // Retrieves all forms from this site
@@ -84,9 +90,10 @@ function gf_list_admin_page(): void
 }
 
 /**
+ * @param  int|string  $form_id  The Gravity Forms form ID; Gravity Forms returns it as an integer or a numeric string.
  * @return mixed[]
  */
-function search_for_specific_gravity_form($form_id): array
+function search_for_specific_gravity_form(int|string $form_id): array
 {
     // Define the post types to search through (in this case, only pages)
     $post_types = ['page'];
