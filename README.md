@@ -66,6 +66,7 @@ Developed and maintained by UAMS Web Services.
 Developers:
 
 - Josh Daugherty
+- Todd McKee
 
 ## Contributing
 Contributions are welcome! If you have any improvements or bug fixes, feel free to fork this repository, make your changes, and submit a pull request.
