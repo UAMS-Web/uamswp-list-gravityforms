@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Plugin Name:       UAMSWP List All Gravity Forms
  * Plugin URI:        https://github.com/UAMS-Web/uamswp-list-gravityforms
  * Description:       List All Gravity Forms in a WordPress Multisite Installation
- * Version:           1.1.0
+ * Version:           1.1.1
  * Requires PHP:      8.2
  * Author:            UAMS Web Services
  * Author URI:        https://communications.uams.edu/web/
