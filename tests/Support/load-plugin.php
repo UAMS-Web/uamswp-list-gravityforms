@@ -65,11 +65,13 @@ function gf_list_tests_load_plugin(): array
     require_once __DIR__.'/GFAPI.php';
     require_once __DIR__.'/WP_Query.php';
 
+    // Read with constant(): the plugin file defines these at run time from function calls, which
+    // PHPStan does not evaluate, so a bare reference would be reported as an unknown constant.
     $loaded = [
         'constants' => [
-            'UAMS_GF_LIST_ROOT_URL' => UAMS_GF_LIST_ROOT_URL,
-            'UAMS_GF_LIST_PATH' => UAMS_GF_LIST_PATH,
-            'UAMS_GF_LIST_VERSION' => UAMS_GF_LIST_VERSION,
+            'UAMS_GF_LIST_ROOT_URL' => constant('UAMS_GF_LIST_ROOT_URL'),
+            'UAMS_GF_LIST_PATH' => constant('UAMS_GF_LIST_PATH'),
+            'UAMS_GF_LIST_VERSION' => constant('UAMS_GF_LIST_VERSION'),
         ],
     ];
 
