@@ -29,11 +29,14 @@ beforeEach(function (): void {
     });
     when('get_the_content')->alias(fn (): string => WP_Query::$current['content'] ?? '');
     when('get_the_ID')->alias(fn (): int => WP_Query::$current['id'] ?? 0);
-    when('parse_blocks')->alias(fn (string $content): array => json_decode($content, true));
+    when('parse_blocks')->alias('gf_list_tests_parse_blocks');
     when('wp_reset_postdata')->justReturn();
     when('get_edit_post_link')->alias(fn (int $id): string => "https://site.test/wp-admin/post.php?post={$id}");
     when('get_the_title')->alias(fn (int $id): string => "Page {$id}");
-    when('esc_html')->alias(fn (string|int $text): string => "[{$text}]");
+    // Like the real function, which takes a string: an int or a null would be a defect in the caller.
+    when('esc_html')->alias(fn (mixed $text): string => is_string($text)
+        ? "[{$text}]"
+        : throw new TypeError('esc_html() takes a string, '.get_debug_type($text).' given.'));
 });
 
 /**

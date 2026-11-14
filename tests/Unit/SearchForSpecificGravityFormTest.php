@@ -37,7 +37,7 @@ beforeEach(function (): void {
 function gf_list_tests_stub_search(array $except = []): void
 {
     if (! in_array('parse_blocks', $except, true)) {
-        when('parse_blocks')->alias(fn (string $content): array => json_decode($content, true));
+        when('parse_blocks')->alias('gf_list_tests_parse_blocks');
     }
 
     if (! in_array('wp_reset_postdata', $except, true)) {
@@ -81,6 +81,14 @@ it('returns the id of a page that holds the form block', function (): void {
     WP_Query::$posts = [gf_list_tests_post(41, [gf_list_tests_form_block(3)])];
 
     expect(search_for_specific_gravity_form(3))->toBe([41]);
+});
+
+it('skips a matching page when the loop reports no post id', function (): void {
+    gf_list_tests_stub_search();
+    when('get_the_ID')->justReturn(false);
+    WP_Query::$posts = [gf_list_tests_post(41, [gf_list_tests_form_block(3)])];
+
+    expect(search_for_specific_gravity_form(3))->toBe([]);
 });
 
 it('matches a form id that is a string against an integer', function (): void {

@@ -53,7 +53,7 @@ parameters:
     # from 0 upward (see the code-quality skill), then raise it by one per
     # change as findings are fixed, until `max`. Lowering it is a deliberate,
     # argued change, not a quiet edit to get a red run green.
-    level: 8
+    level: 9
 
     # PLACEHOLDER: the directories and files holding first-party PHP, including
     # the plugin header file at the root. Include tests: test bugs are real
@@ -116,6 +116,10 @@ parameters:
     # dynamicConstantNames:
     #     - MY_PLUGIN_URL
     #     - MY_PLUGIN_DIR
+
+    # Gravity Forms is not installed for analysis; this stub describes the one API call the plugin makes.
+    stubFiles:
+        - phpstan-stubs/GFAPI.stub
 
     # Checkout-scoped cache. PHPStan's default tmpDir is
     # `sys_get_temp_dir()/phpstan`: machine-global, shared by every checkout and
