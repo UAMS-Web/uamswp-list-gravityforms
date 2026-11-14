@@ -42,7 +42,7 @@ jobs:
       mutate: false
       floor-lint: true
       floor-lint-php: '8.2'
-      floor-lint-command: php -l uamswp-list-gravityforms.php && find includes -name '*.php' -exec php -l {} +
+      floor-lint-command: php -l uamswp-list-gravityforms.php && find includes -name '*.php' -print0 | xargs -0 -n1 php -l
       download-archive: true
       download-archive-command: node .claude/skills/download-archive-check/check-download-archive.mjs
 
