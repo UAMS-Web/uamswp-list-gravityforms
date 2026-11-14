@@ -8,18 +8,16 @@
 
 declare(strict_types=1);
 
-use Brain\Monkey\Functions;
-
-use function Brain\Monkey\Functions\expect;
+use function Brain\Monkey\Functions\expect as expectCall;
 
 beforeEach(function (): void {
-    require_once __DIR__.'/../Support/load-functions.php';
+    require_once __DIR__.'/../Support/load-plugin.php';
 
-    gf_list_tests_load_functions();
+    gf_list_tests_load_plugin();
 });
 
 it('adds the network admin page that lists the forms', function (): void {
-    expect('add_menu_page')
+    expectCall('add_menu_page')
         ->once()
         ->with(
             'List All Gravity Forms',
