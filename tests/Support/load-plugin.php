@@ -23,16 +23,25 @@ use function Brain\Monkey\Functions\when;
 use function UAMS\GF_List\bootstrap;
 
 /**
+ * What the first load of the plugin recorded; one record per process.
+ */
+final class GfListTestsLoadRecord
+{
+    /**
+     * @var array{constants: array<string, mixed>}|null
+     */
+    public static ?array $record = null;
+}
+
+/**
  * @return array{
  *     constants: array<string, mixed>,
  * }
  */
 function gf_list_tests_load_plugin(): array
 {
-    static $loaded = null;
-
-    if ($loaded !== null) {
-        return $loaded;
+    if (GfListTestsLoadRecord::$record !== null) {
+        return GfListTestsLoadRecord::$record;
     }
 
     $plugin_file = dirname(__DIR__, 2).'/uamswp-list-gravityforms.php';
@@ -67,7 +76,7 @@ function gf_list_tests_load_plugin(): array
 
     // Read with constant(): the plugin file defines these at run time from function calls, which
     // PHPStan does not evaluate, so a bare reference would be reported as an unknown constant.
-    $loaded = [
+    GfListTestsLoadRecord::$record = [
         'constants' => [
             'UAMS_GF_LIST_ROOT_URL' => constant('UAMS_GF_LIST_ROOT_URL'),
             'UAMS_GF_LIST_PATH' => constant('UAMS_GF_LIST_PATH'),
@@ -75,7 +84,7 @@ function gf_list_tests_load_plugin(): array
         ],
     ];
 
-    return $loaded;
+    return GfListTestsLoadRecord::$record;
 }
 
 /**

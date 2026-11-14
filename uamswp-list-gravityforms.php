@@ -21,8 +21,9 @@ if (! defined('WPINC')) {
 
 // This plugin uses namespaces and requires PHP 8.0 or greater.
 if (version_compare(PHP_VERSION, '8.0', '<')) {
-    add_action('admin_notices', create_function('', // phpcs:ignore WordPress.PHP.RestrictedPHPFunctions.create_function_create_function
-        "echo '<div class=\"error\"><p>".__('UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.', 'uamswp-list-gravityforms')."</p></div>';"));
+    add_action('admin_notices', function (): void {
+        echo '<div class="error"><p>'.__('UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.', 'uamswp-list-gravityforms').'</p></div>';
+    });
 
     return;
 }

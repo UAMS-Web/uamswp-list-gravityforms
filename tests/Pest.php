@@ -6,6 +6,8 @@
 
 declare(strict_types=1);
 
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
 use function Brain\Monkey\setUp;
 use function Brain\Monkey\tearDown;
 
@@ -19,14 +21,13 @@ use function Brain\Monkey\tearDown;
  * The assertion count: Brain Monkey's expectations are Mockery expectations,
  * which PHPUnit does not count. Without adding them, a test whose only check is
  * `Functions\expect(...)->once()` reports as risky, and failOnRisky fails it.
+ * Mockery's PHPUnit integration adds them after each test, and verifies them.
  */
-uses()
+uses(MockeryPHPUnitIntegration::class)
     ->beforeEach(function (): void {
         setUp();
     })
     ->afterEach(function (): void {
-        $this->addToAssertionCount(Mockery::getContainer()->mockery_getExpectationCount());
-
         tearDown();
     })
     ->in('Unit');

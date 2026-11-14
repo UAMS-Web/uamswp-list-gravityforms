@@ -42,9 +42,25 @@ it('loads the functions file when bootstrap runs', function (): void {
 it('warns instead of loading on a PHP version below 8.0', function (): void {
     gf_list_tests_load_plugin();
 
-    $notice = "echo '<div class=\"error\"><p>UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.</p></div>';";
+    $callback = null;
 
     expectCall('version_compare')->once()->with(PHP_VERSION, '8.0', '<')->andReturn(true);
+    expectAdded('admin_notices')
+        ->once()
+        ->with(Mockery::on(static function (mixed $registered) use (&$callback): bool {
+            $callback = $registered;
+
+            return $registered instanceof Closure;
+        }));
+    expectCall('plugin_dir_url')->never();
+
+    include dirname(__DIR__, 2).'/uamswp-list-gravityforms.php';
+
+    if (! $callback instanceof Closure) {
+        throw new RuntimeException('The version guard did not register a closure on admin_notices.');
+    }
+
+    // The notice is built when it is shown, so the translation runs only then.
     expectCall('__')
         ->once()
         ->with(
@@ -52,9 +68,10 @@ it('warns instead of loading on a PHP version below 8.0', function (): void {
             'uamswp-list-gravityforms'
         )
         ->andReturnFirstArg();
-    expectCall('create_function')->once()->with('', $notice)->andReturn('notice_callback');
-    expectAdded('admin_notices')->once()->with('notice_callback');
-    expectCall('plugin_dir_url')->never();
 
-    include dirname(__DIR__, 2).'/uamswp-list-gravityforms.php';
+    ob_start();
+    $callback();
+    $html = (string) ob_get_clean();
+
+    expect($html)->toBe('<div class="error"><p>UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.</p></div>');
 });

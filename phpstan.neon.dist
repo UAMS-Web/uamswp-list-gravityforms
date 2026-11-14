@@ -53,7 +53,7 @@ parameters:
     # from 0 upward (see the code-quality skill), then raise it by one per
     # change as findings are fixed, until `max`. Lowering it is a deliberate,
     # argued change, not a quiet edit to get a red run green.
-    level: 9
+    level: 10
 
     # PLACEHOLDER: the directories and files holding first-party PHP, including
     # the plugin header file at the root. Include tests: test bugs are real
@@ -154,14 +154,6 @@ parameters:
     # an entry needs. With every entry commented out the key is empty, which
     # PHPStan reads as no entries.
     ignoreErrors:
-        # `create_function()` was removed in PHP 8.0 and is not in the WordPress
-        # stubs. The call sits inside the plugin file's runtime PHP version guard,
-        # which runs only on a site downgraded below PHP 8.0 underneath an active
-        # plugin, where the function still exists.
-        -
-            identifier: function.notFound
-            message: '#^Function create_function not found\.$#'
-            path: uamswp-list-gravityforms.php
         # The plugin file's runtime PHP version guard, `version_compare(PHP_VERSION,
         # '8.0', '<')`. PHPStan analyzes at the `min` above (8.2), so the condition
         # is always false to the analyzer, but the guard exists for a site
