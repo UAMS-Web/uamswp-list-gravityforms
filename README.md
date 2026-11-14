@@ -88,10 +88,6 @@ composer install
 composer test
 ```
 
-`composer test` runs `vendor/bin/pest`. The shared local CI runner runs the same suite alongside its other jobs:
-
-```bash
-node .claude/skills/local-ci/local-ci.mjs
-```
+`composer test` runs `vendor/bin/pest`. Remote CI runs the same suite alongside its other jobs on every pull request, and it is the gate; there is no local runner.
 
 Test files are named `*Test.php` under `tests/Unit/`; a file named otherwise never runs.
