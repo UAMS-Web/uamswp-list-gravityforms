@@ -9,10 +9,10 @@ if (! class_exists('GFAPI')) {
 /**
  * Lists the Gravity Forms of one site, with the pages that embed each form.
  *
- * @param  int|string  $site_id  The blog ID; `WP_Site::$blog_id` is a numeric string.
+ * @param  int  $site_id  The blog ID.
  * @return array<int, array<string, mixed>>
  */
-function get_gravity_forms_for_site(int|string $site_id): array
+function get_gravity_forms_for_site(int $site_id): array
 {
     switch_to_blog($site_id); // Change site
     $forms = GFAPI::get_forms(); // Retrieves all forms from this site
@@ -63,7 +63,8 @@ function gf_list_admin_page(): void
         $all_forms = [];
     $sites = get_sites();
     foreach ($sites as $site) {
-        $site_id = $site->blog_id;
+        // `WP_Site::$blog_id` is a numeric string; the per-site lookup takes an integer.
+        $site_id = (int) $site->blog_id;
         $all_forms = array_merge($all_forms, get_gravity_forms_for_site($site_id));
     }
     if ($all_forms !== []) {
