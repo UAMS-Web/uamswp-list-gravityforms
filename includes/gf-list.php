@@ -14,5 +14,6 @@ add_action('plugins_loaded', 'UAMS\GF_List\bootstrap');
 function bootstrap(): void
 {
     // include_once (__DIR__ . '/class.gf-block-finder.php' );
+    // Scratch: touch this class so the mutate job selects it.
     include_once __DIR__.'/class.gf-list-functions.php';
 }
