@@ -1,11 +1,10 @@
 <?php
 
-if (! is_multisite()) {
-    wp_die('This script must be run in a multisite installation.');
-}
-if (! class_exists('GFAPI')) {
-    wp_die('Gravity Forms API not available. Make sure Gravity Forms is active.');
-}
+/*
+ * Loaded by UAMS\GF_List\bootstrap() only on a multisite network with Gravity
+ * Forms loaded (includes/gf-list.php), so nothing here checks either again.
+ */
+
 /**
  * Lists the Gravity Forms of one site, with the pages that embed each form.
  *

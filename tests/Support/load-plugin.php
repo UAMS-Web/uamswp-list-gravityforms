@@ -7,10 +7,11 @@
  * Loading runs file-scope code that cannot run twice in one process: it declares
  * functions, defines constants and registers hooks. So the first call arranges the
  * conditions the guards check, loads the plugin file, runs the bootstrap function
- * and records what happened; later calls return the same record. Each guard is
- * loaded in its failing state, with wp_die() mocked so it returns, so the guard's
- * branch and message are what the first load pins; the first test to call this
- * verifies those expectations when it tears down.
+ * and records what happened; later calls return the same record. bootstrap() runs
+ * three times, once per guard state: not multisite, multisite without GFAPI, and
+ * both present. What each run registered and whether it loaded the functions file
+ * is recorded under `bootstrap`, and wp_die() is expected never to be called; the
+ * first test to call this verifies those expectations when it tears down.
  */
 
 declare(strict_types=1);
@@ -28,7 +29,7 @@ use function UAMS\GF_List\bootstrap;
 final class GfListTestsLoadRecord
 {
     /**
-     * @var array{constants: array<string, mixed>}|null
+     * @var array{constants: array<string, mixed>, bootstrap: array<string, array<string, bool>>}|null
      */
     public static ?array $record = null;
 }
@@ -36,6 +37,7 @@ final class GfListTestsLoadRecord
 /**
  * @return array{
  *     constants: array<string, mixed>,
+ *     bootstrap: array<string, array<string, bool>>,
  * }
  */
 function gf_list_tests_load_plugin(): array
@@ -62,17 +64,28 @@ function gf_list_tests_load_plugin(): array
 
     include_once $plugin_file;
 
-    // The functions file, loaded by bootstrap(), with both guards failing: not multisite,
-    // and no GFAPI yet. wp_die() is mocked, so it returns and the file loads anyway.
+    // bootstrap() in each guard state. No state may stop the request.
+    expect('wp_die')->never();
+    $bootstrap = [];
+
+    // Not multisite: a notice on admin_notices, and nothing else.
     when('is_multisite')->justReturn(false);
-    expect('wp_die')->once()->with('This script must be run in a multisite installation.');
-    expect('wp_die')->once()->with('Gravity Forms API not available. Make sure Gravity Forms is active.');
-    expectAdded('network_admin_menu')->once()->with('gf_list_admin_menu');
-
+    $before = gf_list_tests_bootstrap_state();
     bootstrap();
+    $bootstrap['not_multisite'] = gf_list_tests_bootstrap_added($before);
 
+    // Multisite, but no GFAPI yet: a notice on network_admin_notices, and nothing else.
+    when('is_multisite')->justReturn(true);
+    $before = gf_list_tests_bootstrap_state();
+    bootstrap();
+    $bootstrap['no_gravity_forms'] = gf_list_tests_bootstrap_added($before);
+
+    // Both present: the functions file loads and adds the menu.
     require_once __DIR__.'/GFAPI.php';
     require_once __DIR__.'/WP_Query.php';
+    $before = gf_list_tests_bootstrap_state();
+    bootstrap();
+    $bootstrap['ready'] = gf_list_tests_bootstrap_added($before);
 
     // Read with constant(): the plugin file defines these at run time from function calls, which
     // PHPStan does not evaluate, so a bare reference would be reported as an unknown constant.
@@ -82,9 +95,45 @@ function gf_list_tests_load_plugin(): array
             'UAMS_GF_LIST_PATH' => constant('UAMS_GF_LIST_PATH'),
             'UAMS_GF_LIST_VERSION' => constant('UAMS_GF_LIST_VERSION'),
         ],
+        'bootstrap' => $bootstrap,
     ];
 
     return GfListTestsLoadRecord::$record;
+}
+
+/**
+ * What bootstrap() has registered so far in this test, and whether it loaded the functions file.
+ *
+ * @return array<string, bool>
+ */
+function gf_list_tests_bootstrap_state(): array
+{
+    return [
+        'not_multisite_notice' => has_action('admin_notices', 'UAMS\\GF_List\\notice_not_multisite') !== false,
+        'no_gravity_forms_notice' => has_action('network_admin_notices', 'UAMS\\GF_List\\notice_no_gravity_forms') !== false,
+        'menu' => has_action('network_admin_menu', 'gf_list_admin_menu') !== false,
+        'functions_loaded' => function_exists('gf_list_admin_menu'),
+    ];
+}
+
+/**
+ * Which of gf_list_tests_bootstrap_state()'s entries became true since $before.
+ *
+ * Brain Monkey keeps a hook added earlier in the same test, so the state after a
+ * call also holds what earlier calls added; this keeps only that call's additions.
+ *
+ * @param  array<string, bool>  $before  The state before the call.
+ * @return array<string, bool>
+ */
+function gf_list_tests_bootstrap_added(array $before): array
+{
+    $added = [];
+
+    foreach (gf_list_tests_bootstrap_state() as $key => $now) {
+        $added[$key] = $now && ! $before[$key];
+    }
+
+    return $added;
 }
 
 /**

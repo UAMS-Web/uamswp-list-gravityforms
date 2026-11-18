@@ -6,9 +6,9 @@ This plugin lists all Gravity Forms across a WordPress multisite network. It add
 The documentation is in the [wiki](https://github.com/UAMS-Web/uamswp-list-gravityforms/wiki): a walkthrough, the reference for the forms table, troubleshooting, and how the plugin works.
 
 ## Requirements
-- **WordPress Multisite** 6.8 or later. On a single-site install the plugin stops every request ([Troubleshooting](https://github.com/UAMS-Web/uamswp-list-gravityforms/wiki/Troubleshooting)).
+- **WordPress Multisite** 6.8 or later. On a single-site install the plugin loads nothing and shows an admin notice saying so.
 - **PHP** 8.2 or later.
-- **Gravity Forms**, network-activated, so that it loads on every site this plugin loads on.
+- **Gravity Forms**, network-activated. Without it in Network Admin, the plugin adds no page and shows a network admin notice instead.
 
 ## Installation
 
