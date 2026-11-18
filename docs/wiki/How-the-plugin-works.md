@@ -1,12 +1,12 @@
-Written against v1.1.1.
+Written against the unreleased `main` branch.
 
 What the code does on each request, and where the plugin is developed.
 
 ## On each request
 
 1. **The main file** (`uamswp-list-gravityforms.php`) stops if it is loaded outside WordPress, defines the plugin's path, URL and version constants, and includes `includes/gf-list.php`.
-2. **On `plugins_loaded`**, `UAMS\GF_List\bootstrap()` includes `includes/class.gf-list-functions.php`.
-3. **That file checks its environment first**: it calls `wp_die()` unless the install is a multisite network and the `GFAPI` class exists (see [Troubleshooting](Troubleshooting.md)). It then hooks `gf_list_admin_menu()` to `network_admin_menu`, which adds the **List Gravity Forms** page.
+2. **On `plugins_loaded`**, `UAMS\GF_List\bootstrap()` checks the environment. On a single-site install it hooks `UAMS\GF_List\notice_not_multisite()` to `admin_notices` and stops there. On a network where the `GFAPI` class does not exist, it hooks `UAMS\GF_List\notice_no_gravity_forms()` to `network_admin_notices` and stops there. Neither case stops the request (see [Troubleshooting](Troubleshooting.md)).
+3. **Otherwise it includes `includes/class.gf-list-functions.php`**, which hooks `gf_list_admin_menu()` to `network_admin_menu` to add the **List Gravity Forms** page.
 
 ## When the page is opened
 

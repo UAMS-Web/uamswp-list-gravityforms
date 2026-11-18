@@ -29,12 +29,12 @@ if (! defined('ABSPATH')) {
 }
 
 /*
- * Plugin files are not loaded here. The plugin file and includes/class.gf-list-functions.php
- * call WordPress functions and die or exit at file scope outside a multisite install with
- * Gravity Forms, and register hooks there, and Brain Monkey's add_action() exists only inside
- * a test. The first test to need the plugin loads it, under the conditions its guards check
- * (see tests/Support/load-plugin.php). tests/Support/GFAPI.php stands in for Gravity Forms'
- * own class and is loaded by that helper, after the guard that checks for the class has run.
+ * Plugin files are not loaded here. The plugin file calls WordPress functions at file scope,
+ * exits when WPINC is undefined, and registers hooks there, and Brain Monkey's add_action()
+ * exists only inside a test. The first test to need the plugin loads it, and runs bootstrap()
+ * under each condition its guards check (see tests/Support/load-plugin.php).
+ * tests/Support/GFAPI.php stands in for Gravity Forms' own class and is loaded by that helper,
+ * after the run that checks for the class's absence.
  */
 
 // cspell:ignore ABSPATH autoloaded

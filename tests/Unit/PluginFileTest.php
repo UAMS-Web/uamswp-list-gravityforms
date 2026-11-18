@@ -4,7 +4,7 @@
  * uamswp-list-gravityforms.php and includes/gf-list.php, the plugin's entry points.
  *
  * The first load of the plugin (tests/Support/load-plugin.php) pins the rest of the
- * file: the hook registrations, both guards in their failing state, the constants,
+ * file: the hook registrations, bootstrap() in each guard state, the constants,
  * and the include of the functions file.
  *
  * The `exit` that follows a missing `WPINC` ends the PHP process, so no test runs it
