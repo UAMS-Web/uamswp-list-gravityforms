@@ -1,8 +1,8 @@
-Written against v1.1.1.
+Written against the unreleased `main` branch.
 
 At the end of this walkthrough you will have the forms table open in Network Admin, listing every Gravity Forms form on every site in the network.
 
-**Note:** the plugin stops every request on a site that is not a multisite network, or where Gravity Forms is not active. Check both before activating it; see [Troubleshooting](Troubleshooting.md#this-script-must-be-run-in-a-multisite-installation).
+**Note:** the plugin needs a multisite network with Gravity Forms network-activated. Without either, it adds no page and shows an admin notice saying which is missing; see [Troubleshooting](Troubleshooting.md#gravity-forms-is-not-active-in-network-admin).
 
 1. **Install the plugin** as the [Installation section of the README](https://github.com/UAMS-Web/uamswp-list-gravityforms#installation) describes, and network-activate it from **Network Admin**, **Plugins**. The plugin appears there as *UAMSWP List All Gravity Forms*.
 2. **Open the page.** In Network Admin, choose **List Gravity Forms** in the left-hand menu (the forms icon). The page is titled *All Gravity Forms on Network*. Its address is `https://example.com/wp-admin/network/admin.php?page=gf-list`, with your network's domain in place of `example.com`.
