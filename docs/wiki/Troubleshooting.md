@@ -5,7 +5,6 @@ Written against the unreleased `main` branch.
 - [There is no List Gravity Forms menu item](#there-is-no-list-gravity-forms-menu-item)
 - [Pages with Form reads None for a form that is on a page](#pages-with-form-reads-none-for-a-form-that-is-on-a-page)
 - [The page is slow or times out](#the-page-is-slow-or-times-out)
-- [Some sites are missing from the table](#some-sites-are-missing-from-the-table)
 - [Fixed](#fixed)
 
 ## UAMSWP List All Gravity Forms needs a WordPress multisite network
@@ -44,14 +43,6 @@ The plugin is active, but Network Admin shows no **List Gravity Forms** item.
 
 **Fix:** none in the plugin. A larger PHP time limit for the request lets it finish.
 
-## Some sites are missing from the table
-
-A site that has forms has no rows, and the network has more than 100 sites.
-
-**Cause:** the plugin reads the network's sites with `get_sites()` and no arguments, which returns at most 100 sites. Sites after the first 100 are not read.
-
-**Fix:** none in the plugin yet.
-
 ## Fixed
 
 Entries for problems fixed after v1.1.1, kept for sites still running it.
@@ -71,3 +62,11 @@ Every page of a site, the admin included, shows only this message.
 **Cause:** the plugin is loaded on a request where Gravity Forms is not, so the `GFAPI` class does not exist and the plugin calls `wp_die()`. This happens when Gravity Forms is deactivated or removed, and also on any site of the network where Gravity Forms is activated per site rather than network-activated: a network-activated copy of this plugin loads on every site, including the ones without Gravity Forms.
 
 **Fix:** network-activate Gravity Forms, so it loads on every site this plugin loads on. If the admin is already unreachable, rename this plugin's folder as in the entry above, activate Gravity Forms, then restore the folder name. With WP-CLI: `wp plugin activate gravityforms --network --skip-plugins=uamswp-list-gravityforms`, using each plugin's folder name if it differs.
+
+### Some sites are missing from the table
+
+A site that has forms has no rows, and the network has more than 100 sites.
+
+**Cause:** the plugin reads the network's sites with `get_sites()` and no arguments, which returns at most 100 sites. Sites after the first 100 are not read.
+
+**Fix:** update the plugin. Later versions read every site of the network.

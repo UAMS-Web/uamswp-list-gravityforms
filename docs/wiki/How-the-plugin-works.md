@@ -10,7 +10,7 @@ What the code does on each request, and where the plugin is developed.
 
 ## When the page is opened
 
-1. `gf_list_admin_page()` reads the sites from `get_sites()` with no arguments, which returns at most 100.
+1. `gf_list_admin_page()` reads every site of the network from `get_sites()`, passing `number` `0` to lift its default limit of 100.
 2. For each site, `get_gravity_forms_for_site()` switches to it with `switch_to_blog()`, reads its forms with `GFAPI::get_forms()`, and reads its name and URL.
 3. For each form, `search_for_specific_gravity_form()` queries the site's pages, parses each page's blocks with `parse_blocks()`, and collects the pages with a top-level `gravityforms/form` block for that form.
 4. The site is restored with `restore_current_blog()`, and the rows are printed as one HTML table. Each cell value passes through `esc_html()`, except the **Pages with Form** cell, which is printed as built: its links carry each page's title through `esc_html()` and its edit URL as `get_edit_post_link()` returns it.
