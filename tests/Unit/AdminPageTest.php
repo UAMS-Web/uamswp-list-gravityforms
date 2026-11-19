@@ -48,6 +48,24 @@ function gf_list_tests_sites(array $blog_ids): array
     return array_map(fn (int $blog_id): object => (object) ['blog_id' => $blog_id], $blog_ids);
 }
 
+/**
+ * Stands get_sites() in as WP_Site_Query answers it: `number` defaults to 100,
+ * and 0 removes the limit.
+ *
+ * @param  array<int, object>  $network
+ */
+function gf_list_tests_get_sites_like_wordpress(array $network): void
+{
+    when('get_sites')->alias(function (array $args = []) use ($network): array {
+        $number = $args['number'] ?? 100;
+        if (! is_int($number)) {
+            throw new TypeError('get_sites() takes an integer `number`, '.get_debug_type($number).' given.');
+        }
+
+        return $number === 0 ? $network : array_slice($network, 0, $number);
+    });
+}
+
 function gf_list_tests_render(): string
 {
     ob_start();
@@ -107,4 +125,26 @@ it('prints the page links of a form unescaped, since they are already markup', f
 
     expect($html)->toContain('<td>[Inactive]</td>')
         ->and($html)->toContain('<td><a href="https://site.test/wp-admin/post.php?post=10">[Page 10]</a><br></td>');
+});
+
+it('lists every site of a network larger than get_sites() returns by default', function (): void {
+    $network = gf_list_tests_sites(range(1, 101));
+    gf_list_tests_get_sites_like_wordpress($network);
+    GFAPI::$forms = [['id' => 3, 'title' => 'Contact', 'is_active' => true]];
+
+    $html = gf_list_tests_render();
+
+    expect(substr_count($html, '>View Form</a>'))->toBe(101)
+        ->and($html)->toContain('<tr><td>[101]</td>');
+});
+
+it('lists a network of 100 sites or fewer as before', function (): void {
+    gf_list_tests_get_sites_like_wordpress(gf_list_tests_sites(range(1, 100)));
+    GFAPI::$forms = [['id' => 3, 'title' => 'Contact', 'is_active' => true]];
+
+    $html = gf_list_tests_render();
+
+    expect(substr_count($html, '>View Form</a>'))->toBe(100)
+        ->and($html)->toContain('<tr><td>[100]</td>')
+        ->and($html)->not->toContain('<tr><td>[101]</td>');
 });

@@ -60,7 +60,8 @@ function gf_list_admin_page(): void
         <h1>All Gravity Forms on Network</h1>
     <?php
         $all_forms = [];
-    $sites = get_sites();
+    // `get_sites()` returns at most 100 sites by default; `number` 0 removes the limit.
+    $sites = get_sites(['number' => 0]);
     foreach ($sites as $site) {
         // `WP_Site::$blog_id` is a numeric string; the per-site lookup takes an integer.
         $site_id = (int) $site->blog_id;

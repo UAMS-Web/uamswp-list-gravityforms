@@ -1,4 +1,4 @@
-Written against v1.1.1.
+Written against the unreleased `main` branch.
 
 The forms table is the one page the plugin adds. It lists every form that Gravity Forms reports on each site of the network.
 
@@ -17,9 +17,7 @@ The plugin adds nothing to any site's own admin menu, and has no settings.
 
 ## Rows
 
-There is one row per form per site. The plugin reads the sites WordPress returns from `get_sites()` with no arguments, switches to each in turn, and asks Gravity Forms for that site's forms with `GFAPI::get_forms()`, also with no arguments, so which forms appear (for example, whether inactive or trashed forms are included) is whatever Gravity Forms returns by default. When no site has a form, the page reads `No forms found in network sites.`
-
-**Warning:** `get_sites()` with no arguments returns at most 100 sites (its default `number`). On a network with more than 100 sites, the table lists the forms of the first 100 only, and says nothing about the rest.
+There is one row per form per site. The plugin reads every site of the network from `get_sites()`, with its `number` set to `0` so that the default limit of 100 does not apply, switches to each in turn, and asks Gravity Forms for that site's forms with `GFAPI::get_forms()` with no arguments, so which forms appear (for example, whether inactive or trashed forms are included) is whatever Gravity Forms returns by default. When no site has a form, the page reads `No forms found in network sites.`
 
 ## Columns
 
