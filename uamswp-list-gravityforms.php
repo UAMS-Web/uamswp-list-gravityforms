@@ -20,10 +20,10 @@ if (! defined('WPINC')) {
     exit;
 }
 
-// This plugin uses namespaces and requires PHP 8.0 or greater.
-if (version_compare(PHP_VERSION, '8.0', '<')) {
+// The PHP floor, matching `Requires PHP:` in the header above.
+if (version_compare(PHP_VERSION, '8.2', '<')) {
     add_action('admin_notices', function (): void {
-        echo '<div class="error"><p>'.__('UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.', 'uamswp-list-gravityforms').'</p></div>';
+        echo '<div class="notice notice-error"><p>'.esc_html__('UAMSWP List All Gravity Forms requires PHP 8.2 or later. Upgrade PHP or deactivate the plugin.', 'uamswp-list-gravityforms').'</p></div>';
     });
 
     return;

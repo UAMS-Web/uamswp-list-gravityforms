@@ -39,12 +39,38 @@ it('loads the functions file when bootstrap runs', function (): void {
         ->and(function_exists('search_for_specific_gravity_form'))->toBeTrue();
 });
 
-it('warns instead of loading on a PHP version below 8.0', function (): void {
-    gf_list_tests_load_plugin();
+/**
+ * The `Requires PHP:` value of the plugin header, read from the file as WordPress reads it.
+ */
+function gf_list_tests_header_requires_php(): string
+{
+    $file = (string) file_get_contents(dirname(__DIR__, 2).'/uamswp-list-gravityforms.php');
+    if (preg_match('/^\s*\*\s*Requires PHP:\s*(\S+)\s*$/m', $file, $matches) !== 1) {
+        throw new RuntimeException('The plugin header has no Requires PHP: line.');
+    }
+
+    return $matches[1];
+}
+
+it('declares PHP 8.2 as the floor in the plugin header', function (): void {
+    expect(gf_list_tests_header_requires_php())->toBe('8.2');
+});
+
+it('warns instead of loading on a PHP version below the header floor', function (): void {
+    /*
+     * No gf_list_tests_load_plugin() here: the first load stubs version_compare() and
+     * expects plugin_dir_url() once, which would override this test's mocks whenever
+     * this test is the one that runs it (a filtered run, or a different order). The
+     * guard returns before anything that load sets up except WPINC, defined here as
+     * that load defines it, since the plugin file exits without it.
+     */
+    if (! defined('WPINC')) {
+        define('WPINC', 'wp-includes');
+    }
 
     $callback = null;
 
-    expectCall('version_compare')->once()->with(PHP_VERSION, '8.0', '<')->andReturn(true);
+    expectCall('version_compare')->once()->with(PHP_VERSION, gf_list_tests_header_requires_php(), '<')->andReturn(true);
     expectAdded('admin_notices')
         ->once()
         ->with(Mockery::on(static function (mixed $registered) use (&$callback): bool {
@@ -61,10 +87,10 @@ it('warns instead of loading on a PHP version below 8.0', function (): void {
     }
 
     // The notice is built when it is shown, so the translation runs only then.
-    expectCall('__')
+    expectCall('esc_html__')
         ->once()
         ->with(
-            'UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.',
+            'UAMSWP List All Gravity Forms requires PHP 8.2 or later. Upgrade PHP or deactivate the plugin.',
             'uamswp-list-gravityforms'
         )
         ->andReturnFirstArg();
@@ -73,5 +99,5 @@ it('warns instead of loading on a PHP version below 8.0', function (): void {
     $callback();
     $html = (string) ob_get_clean();
 
-    expect($html)->toBe('<div class="error"><p>UAMSWP Logo List requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.</p></div>');
+    expect($html)->toBe('<div class="notice notice-error"><p>UAMSWP List All Gravity Forms requires PHP 8.2 or later. Upgrade PHP or deactivate the plugin.</p></div>');
 });
